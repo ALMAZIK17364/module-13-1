@@ -14,28 +14,28 @@ class UserState(StatesGroup):
     weight = State()
 
 @dp.message_handler(commands=['start'])
-async def start(message: types.Message):
+async def start(message):
     await message.answer('Привет! Я бот, помогающий твоему здоровью.')
 
 @dp.message_handler(text="Calories")
-async def set_age(message: types.Message):
+async def set_age(message):
     await message.answer('Введите свой возраст:')
     await UserState.age.set()
 
 @dp.message_handler(state=UserState.age)
-async def set_growth(message: types.Message, state: FSMContext):
+async def set_growth(message):
     await state.update_data(age=message.text)
     await message.answer('Введите свой рост:')
     await UserState.growth.set()
 
 @dp.message_handler(state=UserState.growth)
-async def set_weight(message: types.Message, state: FSMContext):
+async def set_weight(message):
     await state.update_data(growth=message.text)
     await message.answer('Введите свой вес:')
     await UserState.weight.set()
 
 @dp.message_handler(state=UserState.weight)
-async def send_calories(message: types.Message, state: FSMContext):
+async def send_calories(message):
     await state.update_data(weight=message.text)
     data = await state.get_data()
     age = int(data.get('age'))
@@ -46,7 +46,7 @@ async def send_calories(message: types.Message, state: FSMContext):
     await state.finish()
 
 @dp.message_handler()
-async def all_messages(message: types.Message):
+async def all_messages(message):
     await message.answer('Введите команду /start, чтобы начать общение.')
 
 if __name__ == "__main__":
